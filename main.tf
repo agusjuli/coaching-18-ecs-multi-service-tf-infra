@@ -1,14 +1,16 @@
 // Root-level main.tf
-data "aws_vpc" "default" {
-  default = true
+data "aws_vpc" "existing" {
+  id = "vpc-0e8e19d6908edaa69"
 }
+
 
 data "aws_subnets" "default" {
   filter {
     name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
+    values = [data.aws_vpc.existing.id]
   }
 }
+
 
 
 module "ecr" {
