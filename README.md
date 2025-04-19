@@ -1,5 +1,4 @@
 # coaching-18-ecs-multi-service-tf-infra
-
 # 📦 Infra Terraform
 
 Infrastructure as Code for ECS microservices stack.
