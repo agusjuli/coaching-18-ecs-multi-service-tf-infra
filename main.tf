@@ -1,11 +1,15 @@
 // Root-level main.tf
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "3.14.2"
-
-  name = "default-vpc"
-
+data "aws_vpc" "default" {
+  default = true
 }
+
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
 
 module "ecr" {
   source = "./modules/ecr"
