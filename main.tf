@@ -3,8 +3,8 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "3.14.2"
 
-  name            = "default-vpc"
- 
+  name = "default-vpc"
+
 }
 
 module "ecr" {
