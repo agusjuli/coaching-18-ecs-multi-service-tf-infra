@@ -1,8 +1,3 @@
-// modules/ecs/main.tf
-variable "ecr_repos" { type = map(string) }
-variable "s3_bucket" { type = string }
-variable "sqs_url"   { type = string }
-
 resource "aws_ecs_cluster" "main" {
   name = "ecs-app-cluster"
 }
@@ -50,33 +45,33 @@ resource "aws_iam_role_policy_attachment" "app_access" {
 
 resource "aws_ecs_task_definition" "service_1" {
   family                   = "service-1-task"
-  network_mode            = "awsvpc"
+  network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                     = "256"
-  memory                  = "512"
-  execution_role_arn      = aws_iam_role.task_exec.arn
-  container_definitions   = jsonencode([{
-    name      = "service-1",
-    image     = var.ecr_repos["service_1"]
-    essential = true,
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.task_exec.arn
+  container_definitions    = jsonencode([{
+    name         = "service-1",
+    image        = var.ecr_repos["service_1"],
+    essential    = true,
     portMappings = [{ containerPort = 5000 }],
-    environment = [{ name = "S3_BUCKET_NAME", value = var.s3_bucket }]
+    environment  = [{ name = "S3_BUCKET_NAME", value = var.s3_bucket }]
   }])
 }
 
 resource "aws_ecs_task_definition" "service_2" {
   family                   = "service-2-task"
-  network_mode            = "awsvpc"
+  network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                     = "256"
-  memory                  = "512"
-  execution_role_arn      = aws_iam_role.task_exec.arn
-  container_definitions   = jsonencode([{
-    name      = "service-2",
-    image     = var.ecr_repos["service_2"]
-    essential = true,
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.task_exec.arn
+  container_definitions    = jsonencode([{
+    name         = "service-2",
+    image        = var.ecr_repos["service_2"],
+    essential    = true,
     portMappings = [{ containerPort = 5000 }],
-    environment = [{ name = "SQS_QUEUE_URL", value = var.sqs_url }]
+    environment  = [{ name = "SQS_QUEUE_URL", value = var.sqs_url }]
   }])
 }
 
@@ -86,8 +81,10 @@ resource "aws_ecs_service" "svc_1" {
   task_definition = aws_ecs_task_definition.service_1.arn
   desired_count   = 1
   launch_type     = "FARGATE"
+
   network_configuration {
-    subnets         = data.aws_subnets.default.ids
+    subnets         = var.subnet_ids
+    security_groups = var.security_groups
     assign_public_ip = true
   }
 }
@@ -98,16 +95,11 @@ resource "aws_ecs_service" "svc_2" {
   task_definition = aws_ecs_task_definition.service_2.arn
   desired_count   = 1
   launch_type     = "FARGATE"
-  network_configuration {
-    subnets         = data.aws_subnets.default.ids
-    assign_public_ip = true
-  }
-}
 
-data "aws_subnets" "default" {
-  filter {
-    name   = "default-for-az"
-    values = ["true"]
+  network_configuration {
+    subnets         = var.subnet_ids
+    security_groups = var.security_groups
+    assign_public_ip = true
   }
 }
 
