@@ -4,7 +4,7 @@ module "vpc" {
   version = "3.14.2"
 
   name            = "default-vpc"
-  use_default_vpc = true
+ 
 }
 
 module "ecr" {
