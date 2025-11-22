@@ -60,6 +60,6 @@ This should be run using a user or role that has permissions for:
 
 ---
 
-## 🧪 Optional GitHub Action
-You can add `terraform-deploy.yml` in workflows to automate deployment from GitHub.
+## 🧪 GitHub Action
+Add `terraform-deploy.yml` in workflows to automate deployment from GitHub.
 
