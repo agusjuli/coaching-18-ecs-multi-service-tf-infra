@@ -27,7 +27,7 @@ infra-terraform/
 │   └── sqs/
 └── .github/
     └── workflows/
-        └── terraform-deploy.yml (optional)
+        └── terraform-deploy.yml 
 ```
 
 ---
